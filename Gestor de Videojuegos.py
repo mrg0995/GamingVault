@@ -50,26 +50,30 @@ while True:
         print("🎮El juego ya está en la biblioteca.🎮\n")
         print("¿Qué desea hacer? [A]ctualizar Platino🏆, [B]orrar❌, [C]ompletar✅, [S]alir al menú.🚫")
         accion = input("Elige una opción (A/B/C/S)").lower()
-        if accion == 'a':
-            nuevo_platino = input("¿Tienes el Platino🏆? (s/n)").lower() in ['s', 'si']
-            biblioteca_juegos[nombre_juego]['platino'] = nuevo_platino
-            guardar_biblioteca(biblioteca_juegos)
-            print(f"🏆Platino conseguido para {nombre_juego}🏆")
-            continue
-        elif accion == 'b':
-            del biblioteca_juegos[nombre_juego]
-            guardar_biblioteca(biblioteca_juegos)
-            print(f"❌{nombre_juego} eliminado❌")
-            continue
-        elif accion == 'c':
-            nuevo_completado = input("¿Lo has completado✅? (s/n)").lower() in ['s', 'si']
-            biblioteca_juegos[nombre_juego]['completado'] = nuevo_completado
-            guardar_biblioteca(biblioteca_juegos)
-            print(f"✅Completado {nombre_juego}✅")
-            continue
-        else:
-            print("🚫Operación cancelada🚫")
-            continue
+        match accion:
+            case 'a':
+                nuevo_platino = input("¿Tienes el Platino🏆? (s/n)").lower() in ['s', 'si']
+                biblioteca_juegos[nombre_juego]['platino'] = nuevo_platino
+                guardar_biblioteca(biblioteca_juegos)
+                print(f"🏆Platino conseguido para {nombre_juego}🏆")
+                
+            case 'b':
+                del biblioteca_juegos[nombre_juego]
+                guardar_biblioteca(biblioteca_juegos)
+                print(f"❌{nombre_juego} eliminado❌")
+                
+            case 'c':
+                nuevo_completado = input("¿Lo has completado✅? (s/n)").lower() in ['s', 'si']
+                biblioteca_juegos[nombre_juego]['completado'] = nuevo_completado
+                guardar_biblioteca(biblioteca_juegos)
+                print(f"✅Completado {nombre_juego}✅")
+                
+            case 's':
+                print("🚫Operación cancelada🚫")
+                
+            case _:
+                print("⚠️Opción no válida. Por favor, elige una opción válida.⚠️")
+        continue
     
     # Si el juego no estaba, se añade
     plataforma = input("Ingrese la plataforma del juego: ").lower().strip()
@@ -96,4 +100,5 @@ else:
         plat = "🏆" if info['platino'] else "❌"
         print(f"- {nombre} ({info['plataforma']}): {comp} | Platino: {plat}")
 print("="*40)
+
 print("Gracias por usar el gestor. ¡A jugar! 🕹️")
