@@ -37,7 +37,7 @@ Surgió como una herramienta práctica para organizar mis juegos (especialmente 
 
 ## ✒️ Autor
 
-* **Mario Ramírez** - *Desarrollo Completo* (https://github.com/mrg0995)
+* **Mario Ramírez** - *Full Stack Developer* (https://github.com/mrg0995)
 
 ---
 
