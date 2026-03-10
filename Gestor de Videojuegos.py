@@ -84,6 +84,7 @@ while True:
         'completado': completado,
         'platino': platino
     }
+  
     # Llamamos a la función para que se guarde
     guardar_biblioteca(biblioteca_juegos)
     print(f"Juego '{nombre_juego}' agregado y guardado automáticamente en la biblioteca.\n")
@@ -100,5 +101,4 @@ else:
         plat = "🏆" if info['platino'] else "❌"
         print(f"- {nombre} ({info['plataforma']}): {comp} | Platino: {plat}")
 print("="*40)
-
 print("Gracias por usar el gestor. ¡A jugar! 🕹️")
