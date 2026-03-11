@@ -21,70 +21,63 @@ print("-----🎮Bienvenido al Gestor de Videojuegos🎮-----")
 if os.path.exists('biblioteca_juegos.json'):
     with open('biblioteca_juegos.json', 'r') as archivo:
         biblioteca_juegos = json.load(archivo)
-    print("Datos cargados desde 'biblioteca_juegos.json'.")
+    print("🗄️ Datos cargados desde 'biblioteca_juegos.json'🗄️.")
 else:
-    print("No existe biblioteca")
+    print("📂No existe biblioteca📂")
 while True:
-    nombre_juego = input("🎮Ingrese el nombre del juego, 'buscar' o 'salir'): ")
-    nombre_juego = nombre_juego.strip().title()
+    nombre_juego = input("🎮Ingrese el nombre del juego, 🔍'buscar' o 🚫'salir'): ").strip().title()
     if nombre_juego == 'Buscar':
-        buscar_juego = input("🔍Ingrese el nombre del juego a buscar: ")
-        buscar_juego = buscar_juego.strip().title()
+        buscar_juego = input("🔍Ingrese el nombre del juego a buscar: ").strip().title()
         encontrados = False
         print(f"\n🎮Buscando {buscar_juego}🎮")
         for juego, info in biblioteca_juegos.items():
             if buscar_juego in juego:
                 comp = "✅" if info['completado'] else "❌"
                 plat = "🏆" if info['platino'] else "❌"
-                print(f"- {juego} ({info['plataforma']}): {info['completado']} | Platino: {info['platino']}")
+                print(f"- {juego} ({info['plataforma']}): {comp} | Platino🏆: {plat}")
                 encontrados = True
         if not encontrados:
-            print(f"🎮Ese juego no está registrado en esta biblioteca.🎮")
+            print(f"🚫Ese juego no está registrado en esta biblioteca.🚫")
         continue
     if nombre_juego == 'Salir':
         break
     if not nombre_juego:
-        print("El nombre del juego no puede estar vacío")
+        print("⚠️El nombre del juego no puede estar vacío⚠️")
         continue
     if nombre_juego in biblioteca_juegos:
         print("🎮El juego ya está en la biblioteca.🎮\n")
-        print("¿Qué desea hacer? [A]ctualizar Platino🏆, [B]orrar❌, [C]ompletar✅, [S]alir al menú.🚫")
-        accion = input("Elige una opción (A/B/C/S)").lower()
+        print("¿Qué desea hacer? 🏆[A]ctualizar Platino, ❌[B]orrar, ✅[C]ompletar, 🚫[S]alir al menú.")
+        accion = input("Elige una opción (A/B/C/S)🏆❌✅🚫").lower()
         match accion:
             case 'a':
-                nuevo_platino = input("¿Tienes el Platino🏆? (s/n)").lower() in ['s', 'si']
+                nuevo_platino = input("¿Tienes el Platino?🏆 (s/n)").lower().strip in ['s', 'si']
                 biblioteca_juegos[nombre_juego]['platino'] = nuevo_platino
                 guardar_biblioteca(biblioteca_juegos)
                 print(f"🏆Platino conseguido para {nombre_juego}🏆")
-                
             case 'b':
                 del biblioteca_juegos[nombre_juego]
                 guardar_biblioteca(biblioteca_juegos)
-                print(f"❌{nombre_juego} eliminado❌")
-                
+                print(f"❌{nombre_juego} eliminado❌")    
             case 'c':
-                nuevo_completado = input("¿Lo has completado✅? (s/n)").lower() in ['s', 'si']
+                nuevo_completado = input("¿Lo has completado?✅ (s/n)").lower() in ['s', 'si']
                 biblioteca_juegos[nombre_juego]['completado'] = nuevo_completado
                 guardar_biblioteca(biblioteca_juegos)
-                print(f"✅Completado {nombre_juego}✅")
-                
+                print(f"✅Completado {nombre_juego}✅")   
             case 's':
-                print("🚫Operación cancelada🚫")
-                
+                print("🚫Operación cancelada🚫")   
             case _:
                 print("⚠️Opción no válida. Por favor, elige una opción válida.⚠️")
         continue
     
     # Si el juego no estaba, se añade
-    plataforma = input("Ingrese la plataforma del juego: ").lower().strip()
-    completado = input("¿Has completado el juego? (s/n): ").lower().strip() in ['s', 'si']
-    platino = input("¿Has conseguido el platino🏆? (s/n): ").lower().strip() in ['s', 'si']
+    plataforma = input("Ingrese la plataforma del juego🕹️: ").strip().upper()
+    completado = input("¿Has completado el juego?✅(s/n): ").lower().strip() in ['s', 'si']
+    platino = input("¿Has conseguido el platino?🏆 (s/n): ").lower().strip() in ['s', 'si']
     biblioteca_juegos[nombre_juego] = {
         'plataforma': plataforma,
         'completado': completado,
         'platino': platino
     }
-  
     # Llamamos a la función para que se guarde
     guardar_biblioteca(biblioteca_juegos)
     print(f"Juego '{nombre_juego}' agregado y guardado automáticamente en la biblioteca.\n")
