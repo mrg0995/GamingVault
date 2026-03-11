@@ -50,7 +50,7 @@ while True:
         accion = input("Elige una opción (A/B/C/S)🏆❌✅🚫").lower()
         match accion:
             case 'a':
-                nuevo_platino = input("¿Tienes el Platino?🏆 (s/n)").lower().strip in ['s', 'si']
+                nuevo_platino = input("¿Tienes el Platino?🏆 (s/n)").lower().strip() in ['s', 'si']
                 biblioteca_juegos[nombre_juego]['platino'] = nuevo_platino
                 guardar_biblioteca(biblioteca_juegos)
                 print(f"🏆Platino conseguido para {nombre_juego}🏆")
