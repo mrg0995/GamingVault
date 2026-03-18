@@ -71,25 +71,75 @@ datos_filtrados = {k: v for k, v in st.session_state.biblioteca.items() if busqu
 
 if datos_filtrados:
     # Cabecera de la tabla manual
-    c1, c2, c3, c4 = st.columns([3, 2, 2, 1])
+    c1, c2, c3, c4 = st.columns([3, 2, 2, 2])
     c1.write("**Nombre**")
     c2.write("**Plataforma**")
     c3.write("**Estado**")
-    c4.write("**Acción**")
+    c4.write("**Acciones**")
     
     for nombre_juego, info in datos_filtrados.items():
-        col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
+        col1, col2, col3, col4 = st.columns([3, 2, 2, 2])
         
         with col1:
             st.write(nombre_juego)
         with col2:
             st.write(info['plataforma'])
         with col3:
-            estado = "🏆 Platino" if info['platino'] else ("✅ Completado" if info['completado'] else "⏳ Pendiente")
-            st.write(estado)
+            with col3:
+                # --- LÓGICA DE ESTADO ACUMULATIVA ---
+                iconos_estado = []
+                if info['completado']:
+                    iconos_estado.append("✅ Completado")
+                if info['platino']:
+                    iconos_estado.append("🏆 Platino")
+            
+                # Si no tiene nada de lo anterior, está pendiente
+                if not iconos_estado:
+                    st.write("⏳ Pendiente")
+                else:
+                    # Unimos los estados con un " + " o espacio
+                    st.write(" / ".join(iconos_estado))
         with col4:
-            # Usamos el nombre del juego como key única para el botón
-            if st.button("🗑️", key=f"borrar_{nombre_juego}"):
-                borrar_juego(nombre_juego)
+            # --- COLUMNA DE ACCIONES (EDITAR Y BORRAR) ---
+            col_edit, col_borrar = st.columns(2)
+            
+            with col_borrar:
+                # Botón de borrar (el de siempre)
+                if st.button("🗑️", key=f"borrar_{nombre_juego}"):
+                    borrar_juego(nombre_juego)
+
+            with col_edit:
+                # --- MENÚ POP-OVER PARA EDITAR ---
+                with st.popover("📝", help=f"Editar {nombre_juego}"):
+                    st.subheader(f"Editar: {nombre_juego}")
+                    
+                    # Formulario de edición precargado con los datos actuales
+                    with st.form(key=f"form_edit_{nombre_juego}"):
+                        nuevo_nombre = st.text_input("Nombre", value=nombre_juego).strip().title()
+                        nueva_plataforma = st.selectbox(
+                            "Plataforma", 
+                            ["PC", "PS5", "XBOX", "SWITCH", "RETRO"],
+                            index=["PC", "PS5", "XBOX", "SWITCH", "RETRO"].index(info['plataforma'])
+                        )
+                        nuevo_completado = st.checkbox("¿Completado?", value=info['completado'])
+                        nuevo_platino = st.checkbox("¿Platino?", value=info['platino'])
+                        
+                        btn_guardar_edit = st.form_submit_button("Guardar Cambios")
+
+                        if btn_guardar_edit:
+                            # 1. Borramos la entrada antigua (por si ha cambiado el nombre)
+                            del st.session_state.biblioteca[nombre_juego]
+                            
+                            # 2. Creamos la nueva entrada
+                            st.session_state.biblioteca[nuevo_nombre] = {
+                                'plataforma': nueva_plataforma,
+                                'completado': nuevo_completado,
+                                'platino': nuevo_platino
+                            }
+                            
+                            # 3. Guardamos y refrescamos
+                            guardar_biblioteca(st.session_state.biblioteca)
+                            st.success(f"¡{nuevo_nombre} actualizado!")
+                            st.rerun()
 else:
     st.info("No hay juegos que coincidan con la búsqueda.")
