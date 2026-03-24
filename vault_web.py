@@ -2,144 +2,140 @@ import streamlit as st
 import json
 import os
 
-# --- 1. CONFIGURACIÓN DE LA PÁGINA ---
+# --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="GamingVault", page_icon="🎮", layout="wide")
 
-# --- 2. FUNCIONES DE PERSISTENCIA ---
-def cargar_biblioteca():
-    if os.path.exists('biblioteca_juegos.json'):
-        with open('biblioteca_juegos.json', 'r') as archivo:
-            return json.load(archivo)
+# --- 2. PERSISTENCE FUNCTIONS ---
+def load_library():
+    if os.path.exists('game_library.json'):
+        with open('game_library.json', 'r') as file:
+            return json.load(file)
     return {}
 
-def guardar_biblioteca(datos):
-    with open('biblioteca_juegos.json', 'w') as archivo:
-        json.dump(datos, archivo, indent=4, sort_keys=True)
+def save_library(data):
+    with open('game_library.json', 'w') as file:
+        json.dump(data, file, indent=4, sort_keys=True)
 
-# Nueva función específica para borrar
-def borrar_juego(nombre_juego):
-    if nombre_juego in st.session_state.biblioteca:
-        del st.session_state.biblioteca[nombre_juego]
-        guardar_biblioteca(st.session_state.biblioteca)
+# Delete function
+def delete_game(game_name):
+    if game_name in st.session_state.library:
+        del st.session_state.library[game_name]
+        save_library(st.session_state.library)
         st.rerun()
 
-# Cargamos los datos al inicio
-if 'biblioteca' not in st.session_state:
-    st.session_state.biblioteca = cargar_biblioteca()
+# Load data at startup
+if 'library' not in st.session_state:
+    st.session_state.library = load_library()
 
-# --- 3. INTERFAZ: BARRA LATERAL ---
+# --- 3. INTERFACE: SIDEBAR ---
 with st.sidebar:
-    st.header("➕ Añadir Nuevo Juego")
-    with st.form("formulario_juego", clear_on_submit=True):
-        nombre = st.text_input("Nombre del Juego").strip().title()
-        plataforma = st.selectbox("Plataforma", ["PC", "PS5", "XBOX", "SWITCH", "RETRO"])
-        completado = st.checkbox("¿Completado? ✅")
-        platino = st.checkbox("¿Platino? 🏆")
+    st.header("➕ Add New Game")
+    with st.form("game_form", clear_on_submit=True):
+        name = st.text_input("Game Name").strip().title()
+        platform = st.selectbox("Platform", ["PC", "PS5", "XBOX", "SWITCH", "RETRO"])
+        completed = st.checkbox("Completed? ✅")
+        platinum = st.checkbox("Platinum? 🏆")
         
-        btn_añadir = st.form_submit_button("Guardar en la Bóveda")
+        btn_add = st.form_submit_button("Save to Vault")
         
-        if btn_añadir and nombre:
-            st.session_state.biblioteca[nombre] = {
-                'plataforma': plataforma,
-                'completado': completado,
-                'platino': platino
+        if btn_add and name:
+            st.session_state.library[name] = {
+                'platform': platform,
+                'completed': completed,
+                'platinum': platinum
             }
-            guardar_biblioteca(st.session_state.biblioteca)
-            st.success(f"¡{nombre} añadido!")
+            save_library(st.session_state.library)
+            st.success(f"¡{name} added!")
             st.rerun()
 
-# --- 4. CUERPO PRINCIPAL ---
-st.title("🎮 GamingVault: Tu Bóveda de Juegos")
+# --- 4. MAIN BODY ---
+st.title("🎮 GamingVault: Your Game Collection")
 
-# Estadísticas
-total = len(st.session_state.biblioteca)
-completados = sum(1 for j in st.session_state.biblioteca.values() if j['completado'])
-platinos = sum(1 for j in st.session_state.biblioteca.values() if j['platino'])
+# Statistics
+total = len(st.session_state.library)
+completed_count = sum(1 for j in st.session_state.library.values() if j['completed'])
+platinum_count = sum(1 for j in st.session_state.library.values() if j['platinum'])
 
 col_a, col_b, col_c = st.columns(3)
-col_a.metric("Total Juegos", total)
-col_b.metric("Completados", completados)
-col_c.metric("Platinos", platinos)
+col_a.metric("Total Games", total)
+col_b.metric("Completed", completed_count)
+col_c.metric("Platinums", platinum_count)
 
 st.divider()
 
-# Buscador
-busqueda = st.text_input("🔍 Busca un juego en tu colección...", "").strip().title()
+# Search Bar
+search = st.text_input("🔍 Search for a game in your collection...", "").strip().title()
 
-# Filtrar y Mostrar
-datos_filtrados = {k: v for k, v in st.session_state.biblioteca.items() if busqueda in k}
+# Filter and Display
+filtered_data = {k: v for k, v in st.session_state.library.items() if search in k}
 
-if datos_filtrados:
-    # Cabecera de la tabla manual
+if filtered_data:
+    # Table Header
     c1, c2, c3, c4 = st.columns([3, 2, 2, 2])
-    c1.write("**Nombre**")
-    c2.write("**Plataforma**")
-    c3.write("**Estado**")
-    c4.write("**Acciones**")
+    c1.write("**Name**")
+    c2.write("**Platform**")
+    c3.write("**Status**")
+    c4.write("**Actions**")
     
-    for nombre_juego, info in datos_filtrados.items():
+    for game_name, info in filtered_data.items():
         col1, col2, col3, col4 = st.columns([3, 2, 2, 2])
         
         with col1:
-            st.write(nombre_juego)
+            st.write(game_name)
         with col2:
-            st.write(info['plataforma'])
+            st.write(info['platform'])
         with col3:
-            with col3:
-                # --- LÓGICA DE ESTADO ACUMULATIVA ---
-                iconos_estado = []
-                if info['completado']:
-                    iconos_estado.append("✅ Completado")
-                if info['platino']:
-                    iconos_estado.append("🏆 Platino")
+            # --- CUMULATIVE STATUS LOGIC ---
+            status_icons = []
+            if info['completed']:
+                status_icons.append("✅ Completed")
+            if info['platinum']:
+                status_icons.append("🏆 Platinum")
             
-                # Si no tiene nada de lo anterior, está pendiente
-                if not iconos_estado:
-                    st.write("⏳ Pendiente")
-                else:
-                    # Unimos los estados con un " + " o espacio
-                    st.write(" / ".join(iconos_estado))
+            if not status_icons:
+                st.write("⏳ Pending")
+            else:
+                st.write(" / ".join(status_icons))
+                
         with col4:
-            # --- COLUMNA DE ACCIONES (EDITAR Y BORRAR) ---
-            col_edit, col_borrar = st.columns(2)
+            # --- ACTIONS COLUMN (EDIT & DELETE) ---
+            col_edit, col_delete = st.columns(2)
             
-            with col_borrar:
-                # Botón de borrar (el de siempre)
-                if st.button("🗑️", key=f"borrar_{nombre_juego}"):
-                    borrar_juego(nombre_juego)
+            with col_delete:
+                if st.button("🗑️", key=f"delete_{game_name}"):
+                    delete_game(game_name)
 
             with col_edit:
-                # --- MENÚ POP-OVER PARA EDITAR ---
-                with st.popover("📝", help=f"Editar {nombre_juego}"):
-                    st.subheader(f"Editar: {nombre_juego}")
+                # --- EDIT POP-OVER ---
+                with st.popover("📝", help=f"Edit {game_name}"):
+                    st.subheader(f"Edit: {game_name}")
                     
-                    # Formulario de edición precargado con los datos actuales
-                    with st.form(key=f"form_edit_{nombre_juego}"):
-                        nuevo_nombre = st.text_input("Nombre", value=nombre_juego).strip().title()
-                        nueva_plataforma = st.selectbox(
-                            "Plataforma", 
+                    with st.form(key=f"edit_form_{game_name}"):
+                        new_name = st.text_input("Name", value=game_name).strip().title()
+                        new_platform = st.selectbox(
+                            "Platform", 
                             ["PC", "PS5", "XBOX", "SWITCH", "RETRO"],
-                            index=["PC", "PS5", "XBOX", "SWITCH", "RETRO"].index(info['plataforma'])
+                            index=["PC", "PS5", "XBOX", "SWITCH", "RETRO"].index(info['platform'])
                         )
-                        nuevo_completado = st.checkbox("¿Completado?", value=info['completado'])
-                        nuevo_platino = st.checkbox("¿Platino?", value=info['platino'])
+                        new_completed = st.checkbox("Completed?", value=info['completed'])
+                        new_platinum = st.checkbox("Platinum?", value=info['platinum'])
                         
-                        btn_guardar_edit = st.form_submit_button("Guardar Cambios")
+                        btn_save_edit = st.form_submit_button("Save Changes")
 
-                        if btn_guardar_edit:
-                            # 1. Borramos la entrada antigua (por si ha cambiado el nombre)
-                            del st.session_state.biblioteca[nombre_juego]
+                        if btn_save_edit:
+                            # 1. Delete old entry
+                            del st.session_state.library[game_name]
                             
-                            # 2. Creamos la nueva entrada
-                            st.session_state.biblioteca[nuevo_nombre] = {
-                                'plataforma': nueva_plataforma,
-                                'completado': nuevo_completado,
-                                'platino': nuevo_platino
+                            # 2. Create new entry
+                            st.session_state.library[new_name] = {
+                                'platform': new_platform,
+                                'completed': new_completed,
+                                'platinum': new_platinum
                             }
                             
-                            # 3. Guardamos y refrescamos
-                            guardar_biblioteca(st.session_state.biblioteca)
-                            st.success(f"¡{nuevo_nombre} actualizado!")
+                            # 3. Save and rerun
+                            save_library(st.session_state.library)
+                            st.success(f"¡{new_name} updated!")
                             st.rerun()
 else:
-    st.info("No hay juegos que coincidan con la búsqueda.")
+    st.info("No games found matching your search.")
