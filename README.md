@@ -1,40 +1,40 @@
-# 🎮 GamingVault: Gestor de Videojuegos Personal
+# 🎮 GamingVault: Personal Video Game Manager
 
-¡Bienvenido a **GamingVault**! Este es un gestor de biblioteca desarrollado en **Python** que utiliza archivos **JSON** para guardar tu colección de forma permanente. 
+Welcome to **GamingVault**! This is a library management tool developed in **Python** that uses **JSON** files to permanently store and organize your game collection.
 
-Este proyecto nació de la necesidad de organizar mi colección (¡especialmente juegos como *Kingdom Hearts*! 🗝️) y para aplicar conceptos de programación real.
-
----
-
-## 🚀 Funcionalidades Principales
-
-* **Buscador Inteligente:** Localiza juegos rápidamente con solo escribir una parte del nombre. 🔍
-* **Persistencia de Datos:** Los juegos se guardan automáticamente en `biblioteca_juegos.json`. No pierdes nada al cerrar. 💾
-* **Gestión de Progreso:** Controla si has completado el juego ✅ y si has conseguido el Platino 🏆.
-* **Organización Automática:** La lista se muestra siempre ordenada alfabéticamente. 📚
-* **Interfaz Limpia:** Uso de emojis y menús claros para una mejor experiencia.
+This project was born from the need to organize my own collection (especially games like *Kingdom Hearts*! 🗝️) and to apply real-world programming concepts.
 
 ---
 
-## 🛠️ Tecnologías Usadas
+## 🚀 Key Features
 
-* **Lenguaje:** Python 3.10+
-* **Formato de datos:** JSON
-* **Lógica:** Control de flujo con `match/case` y manejo de archivos con la librería `os`.
-
----
-
-## 📋 Cómo se usa
-
-1. **Añadir:** Escribe el nombre de un juego nuevo.
-2. **Editar/Borrar:** Si el juego ya existe, el programa te permite actualizar el platino, marcarlo como completado o eliminarlo.
-3. **Buscar:** Escribe la palabra `Buscar` para filtrar tu colección.
-4. **Salir:** Escribe `Salir` para cerrar el programa de forma segura.
+* **Smart Search:** Instantly locate games by typing any part of their name. 🔍
+* **Data Persistence:** Games are automatically saved to `game_library.json`. Your data is safe even after closing the app. 💾
+* **Progress Tracking:** Keep track of your "Completed" status ✅ and "Platinum" trophies 🏆.
+* **Automated Organization:** The list is always displayed in alphabetical order for easy browsing. 📚
+* **Clean Interface:** Intuitive menus and emoji-enhanced UI for a better user experience.
 
 ---
 
-## ✒️ Autor
+## 🛠️ Technologies Used
+
+* **Language:** Python 3.10+
+* **Data Format:** JSON
+* **Logic:** Flow control using `match/case` and file management with the `os` library.
+
+---
+
+## 📋 How to Use
+
+1. **Add:** Simply enter the name of a new game.
+2. **Edit/Delete:** If the game already exists, the program allows you to update platinum status, mark it as completed, or remove it.
+3. **Search:** Type `Search` (or `Buscar` depending on your version) to filter your collection.
+4. **Exit:** Type `Exit` to safely close the program.
+
+---
+
+## ✒️ Author
 
 * **Mario Ramírez** - [mrg0995](https://github.com/mrg0995)
 
-> *"Un código limpio es la base de un buen juego."* 🕹️
+> *"Clean code is the foundation of a great game."* 🕹️
